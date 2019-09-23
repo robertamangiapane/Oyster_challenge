@@ -1,15 +1,17 @@
 class Oystercard
   attr_accessor :balance
+  attr_reader :journey
 
   DEFAULT_LIMIT = 100.00
+  MINIMUM_AMOUNT = 2.00
 
   def initialize
     @balance = 0.00
-    @minimum_amount = 2.00
+
   end
 
   def add(amount)
-    return "Exceeded card balance limit" if @balance + amount > DEFAULT_LIMIT
+    return "Exceeded card balance limit" if overlimit?(amount)
     @balance += amount
   end
 
@@ -18,17 +20,25 @@ class Oystercard
   end
 
   def touch_in
-    fail "Insufficient balance" if @balance <= @minimum_amount
+    fail "Insufficient balance" if insufficient_funds?
     @journey = true
   end
 
-  def touch_out
+  def touch_out(fare)
     @journey = false
+    deduct(fare)
   end
 
-  private
-
-  def in_journey?
-    @journey
+  def overlimit?(amount)
+    @balance + amount > DEFAULT_LIMIT
   end
+
+  def insufficient_funds?
+    @balance <= MINIMUM_AMOUNT
+  end
+
+  def calculate(start, finish)
+
+  end
+
 end
