@@ -5,6 +5,7 @@ class Oystercard
 
   def initialize
     @balance = 0.00
+    @minimum_amount = 2.00
   end
 
   def add(amount)
@@ -12,5 +13,22 @@ class Oystercard
     @balance += amount
   end
 
+  def deduct(fare)
+    @balance -= fare
+  end
 
+  def touch_in
+    fail "Insufficient balance" if @balance <= @minimum_amount
+    @journey = true
+  end
+
+  def touch_out
+    @journey = false
+  end
+
+  private
+
+  def in_journey?
+    @journey
+  end
 end
