@@ -1,5 +1,5 @@
 class Oystercard
-  attr_accessor :balance
+  attr_reader :balance
   attr_reader :journey
 
   DEFAULT_LIMIT = 90.00
@@ -23,9 +23,9 @@ class Oystercard
     @journey = true
   end
 
-  def touch_out(min_amount)
+  def touch_out
+    deduct(@min_amount)
     @journey = false
-    deduct(min_amount)
   end
 
   # def calculate(start, finish)
