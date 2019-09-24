@@ -1,15 +1,16 @@
 class Oystercard
-  attr_reader :balance, :commute, :journeys, :entry_station, :exit_station
+  attr_reader :balance, :entry_station, :exit_station, :journey
 
   DEFAULT_LIMIT = 90.00
   MINIMUM_AMOUNT = 2.00
+  DEFAULT_PENALITY = 6
 
   def initialize(limit = DEFAULT_LIMIT, min_amount = MINIMUM_AMOUNT)
     @limit = limit
     @min_amount = min_amount
+    @penality = DEFAULT_PENALITY
     @balance = 0.00
-    @journeys = []
-    @commute = false
+    @journey = nil
   end
 
   def top_up(amount)
@@ -21,38 +22,37 @@ class Oystercard
   def touch_in(station_one)
     raise 'Insufficient balance' if insufficient_funds?
 
-    @commute = true
+    calculate_penality if @journey != nil
+    @journey = Journey.new
     @entry_station = station_one
   end
 
   def touch_out(station_two)
-    deduct(@min_amount)
-    @exit_station = station_two
-    add_journey
-    @commute = false
-    @entry_station = nil
-    @exit_station = nil
+    if @journey == nil
+      calculate_penality
+    else
+      @journey.add_journey(@entry_station, station_two)
+      @balance = deduct_fare
+      @journey = nil
+    end
   end
 
-  def add_journey
-    @journeys = [{ entry_station: @entry_station, exit_station: @exit_station }]
+  def deduct_fare
+    fare = @journey.calculate_fare
+    @balance -= fare
   end
 
-  def in_journey?
-    return true if @entry_station != nil
+  def calculate_penality
+    @balance -= @penality
   end
 
   private
 
-  def deduct(fare)
-    @balance -= fare
-  end
-
   def overlimit?(amount)
-    @balance + amount > DEFAULT_LIMIT
+    @balance + amount > @limit
   end
 
   def insufficient_funds?
-    @balance <= MINIMUM_AMOUNT
+    @balance <= @min_amount
   end
 end
