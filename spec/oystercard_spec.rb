@@ -4,8 +4,8 @@ require 'station'
 describe Oystercard do
   let(:max_balance) { described_class::DEFAULT_LIMIT }
   let(:min_amount) { described_class::MINIMUM_AMOUNT }
-  let(:station_one) { Station.new('Aldgate', '1') }
-  let(:station_two) { Station.new('Liverpool St', '1') }
+  let(:station_one) { double :station_one }
+  let(:station_two) { double :station_two }
 
   it 'has a balance' do
     expect(subject.balance).to eq 0.00
@@ -36,6 +36,12 @@ describe Oystercard do
     before do
       subject.top_up(10.00)
       subject.touch_in(station_one)
+    end
+
+    it 'stores a journey' do
+      subject.add_journey(station_one, station_two)
+      journey = { entry_station: station_one, exit_station: station_two }
+      expect(subject.journeys).to include(journey)
     end
 
     it 'return the new balance' do
