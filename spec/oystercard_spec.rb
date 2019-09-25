@@ -39,15 +39,13 @@ describe Oystercard do
     end
 
     it 'stores a journey' do
-      subject.add_journey(station_one, station_two)
+      subject.touch_out(station_two)
       journey = { entry_station: station_one, exit_station: station_two }
       expect(subject.journeys).to include(journey)
     end
-
     it 'return the new balance' do
       expect { subject.touch_out(station_two) }.to change(subject, :balance)
     end
-
     it 'check if touch_in is missing' do
       subject.touch_out(station_two)
       expect { subject.touch_out(station_two) }.to change { subject.balance }.by(-6)

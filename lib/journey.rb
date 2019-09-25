@@ -1,25 +1,22 @@
 class Journey
-  attr_reader :journey, :fare, :entry_station,
-              :exit_station
+  attr_reader :journey, :fare
 
   DEFAULT_FARE = 2
 
   def initialize
-    @entry_station = ''
-    @exit_station = ''
+    @commute = true
     @fare = DEFAULT_FARE
   end
 
   def end_journey
-    @entry_station = nil
-    @exit_station = nil
+    @commute = false
   end
 
   def commuting?
-    !!@exit_station
+    !!@commute
   end
 
-  def calculate_fare
+  def calculate_fare(entry_station, exit_station)
     @fare
   end
 end

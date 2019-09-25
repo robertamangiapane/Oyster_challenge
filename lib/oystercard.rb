@@ -40,7 +40,7 @@ class Oystercard
   end
 
   def deduct_fare
-    fare = @journey.calculate_fare
+    fare = @journey.calculate_fare(@entry_station, @exit_station)
     @balance -= fare
   end
 
